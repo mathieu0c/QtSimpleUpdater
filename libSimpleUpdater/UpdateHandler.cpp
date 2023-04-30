@@ -178,8 +178,6 @@ void UpdateHandler::resetState(const QString& errMsg){
 
 
 void UpdateHandler::setState(States::State newState, bool keepInfoBoxVisible){
-    qDebug() << newState;
-
     if(newState == m_state)
         return;
 
