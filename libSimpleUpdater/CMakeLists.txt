@@ -43,6 +43,7 @@ target_link_libraries(${LIB_NAME} PUBLIC
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Network
     cryptopp
+    libLogger::libLogger
 )
 
 #Set target properties
@@ -74,5 +75,6 @@ if(BUILD_SIGNING_KEYS_TOOLS)
     target_link_libraries(KeysToolsMain
         Qt${QT_VERSION_MAJOR}::Core
         cryptopp
+        libLogger::libLogger
     )
 endif()
