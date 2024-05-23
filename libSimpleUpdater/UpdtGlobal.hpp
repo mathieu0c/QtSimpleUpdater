@@ -21,6 +21,29 @@ struct Version {
   int32_t major{PROJECT_V_MAJOR};
   int32_t minor{PROJECT_V_MINOR};
   int32_t patch{PROJECT_V_PATCH};
+
+  static std::optional<Version> FromString(const QString& version_str) {
+    /* Make sure the full version string match the regex*/
+    static QRegularExpression re{R"(^v{0,1}\d+\.\d+\.\d+$)"};
+    if (!re.match(version_str).hasMatch()) {
+      SPDLOG_ERROR("Invalid version string: {}", version_str);
+      return {};
+    }
+
+    /* Remove the leading 'v' if present */
+    QString version_str_no_v{version_str};
+    if (version_str_no_v.startsWith('v')) {
+      version_str_no_v.remove(0, 1);
+    }
+
+    /* Split the string and convert each part to an integer */
+    QStringList parts = version_str_no_v.split('.');
+    Version v{};
+    v.major = parts[0].toInt();
+    v.minor = parts[1].toInt();
+    v.patch = parts[2].toInt();
+    return v;
+  }
 };
 inline std::ostream& operator<<(std::ostream& os, const Version& v) {
   return os << "v" << v.major << "." << v.minor << "." << v.patch;
@@ -60,8 +83,11 @@ QStringList getLatestReleaseAssetsURLs(const QJsonDocument& doc);
 
 std::optional<Version> getLatestReleaseVersion(const QJsonDocument& doc);
 
+bool operator==(const Version& v0, const Version& v1);
 bool operator>(const Version& v0, const Version& v1);
 bool operator>=(const Version& v0, const Version& v1);
+bool operator<(const Version& v0, const Version& v1);
+bool operator<=(const Version& v0, const Version& v1);
 inline QDebug operator<<(QDebug dbg, const Version& v) {
   dbg.nospace() << v.major << "." << v.minor << "." << v.patch;
   return dbg;

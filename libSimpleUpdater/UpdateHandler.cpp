@@ -327,6 +327,10 @@ void UpdateHandler::onManifestRetrieved(std::optional<QJsonDocument> docOpt, boo
     return;
   }
 
+  SPDLOG_INFO("Min version required: <{}> Will update using installer? <{}>  Will update using update package? <{}>",
+              minVersion,
+              minVersion > m_kRunningVersion,
+              !(minVersion > m_kRunningVersion));
   if (minVersion > m_kRunningVersion) {
     updateFromInstaller(manifestOpt.value());
   } else {
